@@ -44,7 +44,7 @@ class NPC(AnimatedSprite):
                 self.game.sound.npc_pain.play()
                 self.game.player.shot = False
                 self.pain = True
-                self.health -= self.game.weapon.damage
+                self.health -= self.game.weapon.damage.base_damage
                 self.check_health()
         
         
