@@ -17,7 +17,7 @@ REQUIRED_FEATURES = {
     "weapon_rework": False,
     "npc_difficulty": False,
     "resolution_update": False,
-    "ray_refactor": False,
+    "ray_refactor": True,
     "init_reorder": False,
 }
 
