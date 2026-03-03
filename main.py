@@ -14,7 +14,7 @@ from pathfinding import *
 REQUIRED_FEATURES = {
     "health_system": False,
     "armor_system": False,
-    "weapon_rework": False,
+    "weapon_rework": True,
     "npc_difficulty": False,
     "resolution_update": False,
     "ray_refactor": False,
