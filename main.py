@@ -12,7 +12,7 @@ from sound import *
 from pathfinding import *
 
 REQUIRED_FEATURES = {
-    "health_system": False,
+    "health_system": True,
     "armor_system": False,
     "weapon_rework": False,
     "npc_difficulty": False,
