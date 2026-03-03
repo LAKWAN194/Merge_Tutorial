@@ -11,11 +11,8 @@ from weapon import *
 from sound import *
 from pathfinding import *
 
-
-
 class Game: 
-    def __init__(self):
-             
+    def __init__(self):  
         pg.init()
         self.screen = pg.display.set_mode(RES) # create the game window with the specified resolution
         self.clock = pg.time.Clock() # create a clock object to manage the game's frame rate
