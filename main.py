@@ -18,7 +18,7 @@ REQUIRED_FEATURES = {
     "npc_difficulty": False,
     "resolution_update": False,
     "ray_refactor": False,
-    "init_reorder": False,
+    "init_reorder": True,
 }
 
 def check_all_features():
