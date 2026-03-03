@@ -8,6 +8,7 @@ class Player:
         self.x, self.y = PLAYER_POS
         self.angle = PLAYER_ANGLE
         self.shot = False
+        self.armor = 50
         self.rel = 0
         self.health = PLAYER_MAX_HEALTH
         self.health_recovery_delay = 700
@@ -32,6 +33,10 @@ class Player:
             self.game.new_game()
 
     def get_damage(self, damage):
+        if self.armor > 0:
+            absorbed = min(self.armor, damage)
+            self.armor -= absorbed
+            damage -= absorbed
         self.health -= damage
         self.game.object_renderer.player_damage()
         self.game.sound.player_pain.play()
