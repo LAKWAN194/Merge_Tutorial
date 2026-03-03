@@ -11,11 +11,23 @@ from weapon import *
 from sound import *
 from pathfinding import *
 
+REQUIRED_FEATURES = {
+    "health_system": False,
+    "armor_system": False,
+    "weapon_rework": False,
+    "npc_difficulty": False,
+    "resolution_update": False,
+    "ray_refactor": False,
+    "init_reorder": False,
+}
 
+def check_all_features():
+    return all(REQUIRED_FEATURES.values())
 
 class Game: 
     def __init__(self):
-             
+        if not check_all_features():
+            raise Exception("🚫 Merge all feature branches correctly before running the game.")     
         pg.init()
         self.screen = pg.display.set_mode(RES) # create the game window with the specified resolution
         self.clock = pg.time.Clock() # create a clock object to manage the game's frame rate
