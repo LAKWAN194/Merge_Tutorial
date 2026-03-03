@@ -29,7 +29,7 @@ class Raycasting:
             
             self.objects_to_render.append((depth, wall_column, wall_pos))
         
-    def ray_cast(self):
+    def perform_ray_cast(self):
         self.ray_casting_result = []
         ox, oy = self.game.player.pos        
         x_map, y_map = self.game.player.map_pos
@@ -109,5 +109,5 @@ class Raycasting:
             ray_angle += DELTA_ANGLE
     
     def update(self):
-        self.ray_cast()
+        self.perform_ray_cast()
         self.get_objects_to_render()
