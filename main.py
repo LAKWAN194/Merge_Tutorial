@@ -41,10 +41,10 @@ class Game:
     def new_game(self):
         self.map = Map(self) # create a new instance of the Map class, passing the current game instance as an argument.
         self.player = Player(self) # create a new instance of the Player class, passing the current game instance as an argument.
-        self.object_renderer = ObjectRenderer(self) # create a new instance of the ObjectRenderer class, passing the current game instance as an argument.
         self.raycasting = Raycasting(self) # create a new instance of the Raycasting class, passing the current game instance as an argument.
         self.object_handler = ObjectHandler(self)
         self.weapon = Weapon(self)
+        self.object_renderer = ObjectRenderer(self) # create a new instance of the ObjectRenderer class, passing the current game instance as an argument.
         self.sound = Sound(self)
         self.pathfinding = PathFinding(self)
         
