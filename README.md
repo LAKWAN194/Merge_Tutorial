@@ -1,18 +1,3 @@
-Here is a complete `README.md` you can copy directly.
-
-It includes:
-
-* Python version requirement (3.13.2)
-* Virtual environment setup
-* Installing pygame
-* Git requirement
-* Running the game
-* Workshop explanation
-* Merge instructions
-* Troubleshooting
-
----
-
 # 🎮 Raycasting Git Merge Workshop
 
 A Python raycasting game used for practicing **Git branching and merge conflict resolution**.
@@ -66,8 +51,8 @@ git --version
 ## 1️⃣ Clone the Repository
 
 ```bash
-git clone <your-repo-url>
-cd <repo-folder>
+git clone https://github.com/LAKWAN194/Merge_Tutorial/
+cd Merge_Tutorial
 ```
 
 ---
@@ -337,3 +322,4 @@ If you want, I can also generate:
 * A printable cheat sheet
 * A Git command quick reference
 * A troubleshooting flowchart for students
+
