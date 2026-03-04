@@ -315,11 +315,3 @@ When all conflicts are properly resolved:
 🏆 You win the Git Merge Battle
 
 ---
-
-If you want, I can also generate:
-
-* A facilitator version of README
-* A printable cheat sheet
-* A Git command quick reference
-* A troubleshooting flowchart for students
-
