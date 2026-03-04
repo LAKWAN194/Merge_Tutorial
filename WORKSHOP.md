@@ -4,7 +4,7 @@
 
 Your mission:
 
-Merge 7 feature branches into master and restore the game to a playable state.
+Merge 6 feature branches into master and restore the game to a playable state.
 
 The game will NOT run until:
 - All branches are merged
@@ -43,7 +43,6 @@ You should see:
   feature-health-system
   feature-armor
   feature-weapon-rework
-  feature-npc-difficulty
   feature-resolution
   feature-ray-refactor
   feature-init-reorder
@@ -58,10 +57,9 @@ We will merge in this order:
 1. feature-health-system
 2. feature-armor
 3. feature-weapon-rework
-4. feature-npc-difficulty
-5. feature-resolution
-6. feature-ray-refactor
-7. feature-init-reorder
+4. feature-resolution
+5. feature-ray-refactor
+6. feature-init-reorder
 
 ---
 
@@ -207,42 +205,6 @@ git commit
 ## Merge 4
 
 ```bash
-git merge feature-npc-difficulty
-```
-
-Possible conflict in:
-
-- npc.py constructor
-- object_handler.py
-
-If constructor changed to:
-
-```python
-def __init__(self, game, difficulty="normal", path=...
-```
-
-You must update calls in `object_handler.py` to include difficulty if required.
-
-Example:
-
-```python
-add_npc(SoldierNPC(game, difficulty="normal", pos=(11.0, 19.0)))
-```
-
-Resolve conflicts.
-
-Then:
-
-```bash
-git add .
-git commit
-```
-
----
-
-## Merge 5
-
-```bash
 git merge feature-resolution
 ```
 
@@ -277,7 +239,7 @@ git commit
 
 ---
 
-## Merge 6
+## Merge 5
 
 ```bash
 git merge feature-ray-refactor
@@ -324,7 +286,7 @@ git commit
 
 ---
 
-## Merge 7
+## Merge 6
 
 ```bash
 git merge feature-init-reorder
@@ -358,7 +320,6 @@ REQUIRED_FEATURES = {
     "health_system": True,
     "armor_system": True,
     "weapon_rework": True,
-    "npc_difficulty": True,
     "resolution_update": True,
     "ray_refactor": True,
     "init_reorder": True,
@@ -424,7 +385,7 @@ Common mistakes:
 
 When the game runs successfully, you have:
 
-- Merged 7 branches
+- Merged 6 branches
 - Resolved multiple conflicts
 - Reconciled logic properly
 - Completed the Git merge challenge
@@ -442,5 +403,6 @@ git checkout stable-backup
 ---
 
 # 🏆 Congratulations
+
 
 You have survived the Git Merge Tutorial.
