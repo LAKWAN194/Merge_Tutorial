@@ -136,7 +136,6 @@ Participants must:
 * `feature-health-system`
 * `feature-armor`
 * `feature-weapon-rework`
-* `feature-npc-difficulty`
 * `feature-resolution`
 * `feature-ray-refactor`
 * `feature-init-reorder`
@@ -157,7 +156,6 @@ Merge branches one by one:
 git merge feature-health-system
 git merge feature-armor
 git merge feature-weapon-rework
-git merge feature-npc-difficulty
 git merge feature-resolution
 git merge feature-ray-refactor
 git merge feature-init-reorder
@@ -315,3 +313,4 @@ When all conflicts are properly resolved:
 🏆 You win the Git Merge Battle
 
 ---
+
