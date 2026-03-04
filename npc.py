@@ -44,7 +44,7 @@ class NPC(AnimatedSprite):
                 self.game.sound.npc_pain.play()
                 self.game.player.shot = False
                 self.pain = True
-                self.health -= self.game.weapon.damage.base_damage
+                self.health -= self.game.weapon.base_damage
                 self.check_health()
         
         
@@ -221,4 +221,5 @@ class CyberDemonNPC(NPC):
         self.health = 350
         self.attack_damage = 15
         self.speed = 0.055
+
         self.accuracy = 0.25
