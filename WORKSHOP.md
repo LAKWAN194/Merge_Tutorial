@@ -9,7 +9,7 @@ Merge 6 feature branches into master and restore the game to a playable state.
 The game will NOT run until:
 - All branches are merged
 - All merge conflicts are resolved properly
-- `REQUIRED_FEATURES` contains **7 True values**
+- `REQUIRED_FEATURES` contains **6 True values**
 
 ---
 
@@ -406,3 +406,4 @@ git checkout stable-backup
 
 
 You have survived the Git Merge Tutorial.
+
