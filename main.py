@@ -20,7 +20,7 @@ REQUIRED_FEATURES = {
     "weapon_rework": True,
     "resolution_update": True,
     "ray_refactor": True,
-    "init_reorder": False,
+    "init_reorder": True,
 }
 
 def check_all_features():
