@@ -9,13 +9,13 @@ class Player:
         self.angle = PLAYER_ANGLE
         self.shot = False
         self.rel = 0
-        self.health = PLAYER_MAX_HEALTH
+        self.health = PLAYER_BASE_HEALTH
         self.health_recovery_delay = 700
         self.time_prev = pg.time.get_ticks()
         self.diag_move_corr = 1 / math.sqrt(2)
         
     def recover_health(self):
-        if self.check_health_recovery_delay() and self.health < PLAYER_MAX_HEALTH:
+        if self.check_health_recovery_delay() and self.health < PLAYER_BASE_HEALTH:
             self.health += 1
 
     def check_health_recovery_delay(self):
