@@ -20,9 +20,7 @@ def main():
     game = Game()
     try:
         for _ in range(args.frames):
-            game.check_events()
-            game.update()
-            game.draw()
+            game.step()
         original_health = game.player.health
         game.player.get_damage(10)
         assert game.player.armor == 40 and game.player.health == original_health

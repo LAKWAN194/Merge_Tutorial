@@ -108,13 +108,10 @@ class Player:
         self.recover_health()
                 
     def mouse_coordinates(self):
-        mx, my = pg.mouse.get_pos()
-        if mx < MOSUE_BORDER_LEFT or mx > MOUSE_BORDER_RIGHT:
-            pg.mouse.set_pos((HALF_WIDTH, HALF_HEIGHT))
-            
         self.rel = pg.mouse.get_rel()[0]
-        self.rel = max(-MOUSE_MAX_REL, min(MOUSE_MAX_REL, self.rel))
-        self.angle += self.rel * MOUSE_SENSITIVITY * self.game.delta_time
+        # Mouse deltas already measure movement since the last frame; multiplying
+        # by frame time makes sensitivity change with the frame rate.
+        self.angle = (self.angle + self.rel * MOUSE_SENSITIVITY) % math.tau
         
     @property
     def pos(self):
@@ -122,6 +119,4 @@ class Player:
     
     @property
     def map_pos(self):
-        return (int(self.x), int(self.y))  
-    
-    
+        return (int(self.x), int(self.y))

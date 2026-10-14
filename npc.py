@@ -21,15 +21,18 @@ class NPC(AnimatedSprite):
         
         self.ray_cast_value = False
         self.frame_counter = 0 
+        self.death_animation_started = False
         
         self.player_search_trigger = False
         
         
     def update(self):
         self.check_animation_time()
-        self.get_sprite()
-        # self.draw_ray_cast()
+        # Refresh aim geometry for hit detection, then project the selected
+        # animation frame after state changes instead of drawing the old frame.
+        self.get_sprite(project=False)
         self.run_logic()
+        self.get_sprite()
         
         
         
@@ -40,7 +43,6 @@ class NPC(AnimatedSprite):
             # The sprite is on screen and the crosshair is over it
             if (HALF_WIDTH - self.sprite_half_width < self.screen_x < HALF_WIDTH + self.sprite_half_width 
                 and self.distance < 10):  # Add a max distance check
-                print(f"NPC HIT! Health: {self.health}")  # Debug print
                 self.game.sound.npc_pain.play()
                 self.game.player.shot = False
                 self.pain = True
@@ -109,16 +111,21 @@ class NPC(AnimatedSprite):
         # pg.draw.rect(self.game.screen, 'blue', (100 * next_x, 100 * next_y, 100, 100))
         if next_pos not in self.game.object_handler.npc_positions:
             angle = math.atan2(next_y + 0.5 - self.y, next_x + 0.5 - self.x)
-            dx = math.cos(angle) * self.speed
-            dy = math.sin(angle) * self.speed
+            # Existing speeds are distances per frame at the 60 FPS baseline.
+            speed = self.speed * self.game.delta_time / (1000 / 60)
+            dx = math.cos(angle) * speed
+            dy = math.sin(angle) * speed
             self.check_wall_collision(dx, dy)
             
     def animate_death(self):
         if not self.alive:
-            if self.game.global_trigger and self.frame_counter < len(self.death_images) - 1:
+            if not self.death_animation_started:
+                self.death_animation_started = True
+                self.animation_time_previous = pg.time.get_ticks()
+            elif self.animation_trigger and self.frame_counter < len(self.death_images) - 1:
                 self.death_images.rotate(-1)
-                self.image = self.death_images[0]
                 self.frame_counter += 1
+            self.image = self.death_images[0]
             
             
     @property

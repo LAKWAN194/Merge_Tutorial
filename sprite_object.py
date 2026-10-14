@@ -4,6 +4,7 @@ import pygame as pg
 import math
 from settings import *
 import os
+import re
 from collections import deque
 
 class SpriteObject:
@@ -49,7 +50,7 @@ class SpriteObject:
             (self.norm_dist, image, pos)
         )
 
-    def get_sprite(self):
+    def get_sprite(self, project=True):
         dx = self.x - self.player.x
         dy = self.y - self.player.y
 
@@ -67,7 +68,7 @@ class SpriteObject:
         self.norm_dist = self.distance * math.cos(delta)
 
         if (
-            -self.image_half_width < self.screen_x < WIDTH + self.image_half_width
+            project and -self.image_half_width < self.screen_x < WIDTH + self.image_half_width
             and self.norm_dist > 0.5
         ):
             self.get_sprite_projection()
@@ -90,7 +91,7 @@ class AnimatedSprite(SpriteObject):
     def animate(self,images):
         if(self.animation_trigger):
             images.rotate(-1)
-            self.image = images[0]
+        self.image = images[0]
         
     def check_animation_time(self):
         self.animation_trigger = False
@@ -102,13 +103,18 @@ class AnimatedSprite(SpriteObject):
 
     def load_images(self, path):
         images = deque()
-        for file_name in os.listdir(path):
+        # Numeric names and Doom-style letter names both have a defined sequence.
+        frame_names = sorted(os.listdir(path), key=lambda name: [
+            int(part) if part.isdigit() else part.lower()
+            for part in re.split(r"(\d+)", name)
+        ])
+        for file_name in frame_names:
             if os.path.isfile(os.path.join(path, file_name)):
                 img = pg.image.load(path + '/' + file_name).convert_alpha()
                 images.append(img)
         return images
     
     def update(self):
-        super().update()
         self.check_animation_time()
         self.animate(self.images)  
+        super().update()

@@ -120,3 +120,25 @@ solution. Original feature branches and `stable-backup` were left unchanged.
 Some original PNG assets produce libpng color-profile warnings while loading;
 they did not prevent rendering. Interactive mouse control and audible playback
 have not been checked by this automated run.
+
+## Mouse capture and animation fixes
+
+On `workshop-solution`, the game captures relative mouse movement while playing.
+**Tab** releases the cursor and pauses the simulation. Click inside the game to
+resume; that first click does not fire. Losing window focus also releases the
+cursor and pauses until you return and click. Escape still exits.
+
+Animation frames now load in numeric/letter order rather than filesystem order.
+The game presents each frame after drawing, uses a 60 FPS cap, and keeps mouse
+sensitivity independent of frame timing. NPC movement scales with elapsed time,
+and death animations play once and hold their final frame.
+
+Run the control and animation regression checks with:
+
+```sh
+python -m unittest discover -s tests -v
+```
+
+These checks cover focus changes, Tab/click capture, mouse sensitivity, render
+ordering, frame sorting, animation transitions, and complete death/shot sequences.
+The headless runtime check also verifies actual game assets and simulation.
