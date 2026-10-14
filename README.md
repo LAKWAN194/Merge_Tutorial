@@ -108,3 +108,15 @@ features. `player.py`, `weapon.py`, and `npc.py` handle combat; `raycasting.py`,
 `object_renderer.py`, and the sprite modules render it. `map.py` and
 `pathfinding.py` handle the world, while `resources/` holds images and audio.
 `tools/` contains source and runtime checks.
+
+## Recorded verification
+
+On 2026-10-14, the starter source check passed and its launcher listed exactly
+six missing features. The solution source check and 120-frame headless runtime
+check passed on Python 3.12.3 with pygame 2.6.1, including armor absorption,
+weapon damage, and restart. All six feature branches are ancestors of the
+solution. Original feature branches and `stable-backup` were left unchanged.
+
+Some original PNG assets produce libpng color-profile warnings while loading;
+they did not prevent rendering. Interactive mouse control and audible playback
+have not been checked by this automated run.
