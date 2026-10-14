@@ -1,5 +1,8 @@
 import pygame as pg
 import sys
+import os
+from pathlib import Path
+from workshop import FEATURE_BRANCHES
 from settings import *
 from map import *
 from player import *
@@ -15,19 +18,22 @@ REQUIRED_FEATURES = {
     "health_system": False,
     "armor_system": False,
     "weapon_rework": False,
-    "npc_difficulty": False,
     "resolution_update": False,
     "ray_refactor": False,
     "init_reorder": False,
 }
 
 def check_all_features():
-    return all(REQUIRED_FEATURES.values())
+    return all(REQUIRED_FEATURES.get(name, False) for name in FEATURE_BRANCHES)
 
-class Game: 
+class Game:
     def __init__(self):
         if not check_all_features():
-            raise Exception("🚫 Merge all feature branches correctly before running the game.")     
+            missing = [FEATURE_BRANCHES[name] for name in FEATURE_BRANCHES
+                       if not REQUIRED_FEATURES.get(name, False)]
+            raise RuntimeError("Workshop starter is intentionally locked. Merge: "
+                               + ", ".join(missing) + ". See WORKSHOP.md, or use workshop-solution for the demo.")
+        os.chdir(Path(__file__).resolve().parent)
         pg.init()
         self.screen = pg.display.set_mode(RES) # create the game window with the specified resolution
         self.clock = pg.time.Clock() # create a clock object to manage the game's frame rate
@@ -37,7 +43,7 @@ class Game:
         self.global_event = pg.USEREVENT + 0
         pg.time.set_timer(self.global_event, 40) # set a timer to trigger the global event every 40 milliseconds
         self.new_game()
-        
+
     def new_game(self):
         self.map = Map(self) # create a new instance of the Map class, passing the current game instance as an argument.
         self.player = Player(self) # create a new instance of the Player class, passing the current game instance as an argument.
@@ -47,9 +53,9 @@ class Game:
         self.weapon = Weapon(self)
         self.sound = Sound(self)
         self.pathfinding = PathFinding(self)
-        
+
         pg.mixer.music.play(-1)
-        
+
     def update(self):
         self.player.update() # call the update method of the Player instance to update the player's state based on user input and game logic
         self.raycasting.update() # call the update method of the Raycasting instance to update the raycasting state
@@ -58,16 +64,16 @@ class Game:
         pg.display.flip() # update the display to show any changes made to the screen
         self.delta_time = self.clock.tick(FPS)   # Get FPS
         pg.display.set_caption(f'{self.clock.get_fps():.1f}') # display FPS in the window title
-        
-        
+
+
     def draw(self):
         #self.screen.fill('black') # Paint the screen black in each iteration
         #self.map.draw() # call the draw method of the Map instance to render the game map on the screen
         #self.player.draw() # call the draw method of the Player instance to render the player on the screen
-        self.object_renderer.draw() # call the draw method of the ObjectRenderer instance to render the game objects on the screen   
-        self.weapon.draw()    
-    
-        
+        self.object_renderer.draw() # call the draw method of the ObjectRenderer instance to render the game objects on the screen
+        self.weapon.draw()
+
+
     def check_events(self):
         self.global_trigger = False
         for event in pg.event.get():
@@ -83,9 +89,9 @@ class Game:
             self.check_events()
             self.update()
             self.draw()
-                    
-                    
-                    
+
+
+
 if __name__ == '__main__':
     game = Game()
     game.run()

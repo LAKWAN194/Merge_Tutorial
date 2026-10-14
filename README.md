@@ -1,316 +1,110 @@
-# 🎮 Raycasting Git Merge Workshop
+# Git Merge Workshop — Raycasting Game
 
-A Python raycasting game used for practicing **Git branching and merge conflict resolution**.
+This repository is a hands-on exercise in **Git branching, merge conflicts, and
+reconciling changes across files**. The pygame raycasting game is the teaching
+vehicle: participants merge six feature branches and restore a playable game.
 
-This project is intentionally structured for a workshop where participants must merge multiple feature branches before the game becomes playable.
+**The default `master` branch is intentionally locked.** That is the starting
+point of the exercise. To play the completed game instead, use
+`workshop-solution`. See [WORKSHOP.md](WORKSHOP.md) for participant instructions.
 
----
+## Choose your path
 
-# 🧰 Requirements
+| Branch | Purpose |
+| --- | --- |
+| `master` | Workshop starter, with six required features disabled |
+| `feature-*` | Six separate changes that participants must merge and reconcile |
+| `workshop-solution` | Completed integration for a runnable demo or instructor reference |
+| `stable-backup` | Original baseline game; retained unchanged for reference |
 
-## 🐍 Python
+There is no `workshop-main` or `feature-npc-difficulty` branch. The exercise has
+six implemented features, not seven. The old orphan `npc_difficulty` flag was an
+unintended blocker and is no longer part of the launcher requirement.
 
-* **Python 3.13.2**
-* Must be run inside a **virtual environment**
+## Requirements and setup
 
-Check your version:
+- Python 3.10 or later (verified on Python 3.12)
+- pygame installed from `requirements.txt`
+- A graphical desktop for playing, and an audio device for sound
+- Git for the workshop
 
-```bash
-python --version
-```
-
-Expected:
-
-```
-Python 3.13.2
-```
-
----
-
-## 📦 Required Python Packages
-
-* `pygame`
-
----
-
-## 🔧 Required Tools
-
-* **Git**
-* Python 3.13.2
-
-Check Git:
-
-```bash
-git --version
-```
-
----
-
-# ⚙️ Setup Instructions
-
-## 1️⃣ Clone the Repository
-
-```bash
-git clone https://github.com/LAKWAN194/Merge_Tutorial/
+```sh
+git clone https://github.com/LAKWAN194/Merge_Tutorial.git
 cd Merge_Tutorial
-```
-
----
-
-## 2️⃣ Create Virtual Environment
-
-### Windows (PowerShell)
-
-```bash
-python -m venv .venv
-.\.venv\Scripts\Activate
-```
-
-### macOS / Linux
-
-```bash
 python3 -m venv .venv
 source .venv/bin/activate
+python -m pip install -r requirements.txt
 ```
 
-You should now see:
+On Windows use `python -m venv .venv`, then `.venv\Scripts\Activate.ps1` in
+PowerShell. Inside the activated environment, use `python` for all commands below.
 
-```
-(.venv)
-```
+## Play the completed demo
 
-in your terminal prompt.
-
----
-
-## 3️⃣ Install Dependencies
-
-```bash
-pip install pygame
-```
-
-Or if using requirements file:
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-# ▶️ Running the Game
-
-Once everything is set up:
-
-```bash
+```sh
+git switch --track origin/workshop-solution
+python tools/check_workshop.py --expect solution
 python main.py
 ```
 
-If all feature branches are merged correctly, the game will launch.
+If the local branch already exists, use `git switch workshop-solution`.
+Controls: **WASD** to move, **mouse** or **left/right arrows** to look, **left
+mouse button** to shoot, and **Escape** to quit. NPCs attack the player; the game
+restarts after death. The solution uses a 1280 × 720 window.
 
-If not, you will see:
+The launcher resolves the resource directory relative to `main.py`, so invoking
+it by an absolute path also works.
 
-```
-Exception: 🚫 Merge all feature branches correctly before running the game.
-```
+## Start the merge exercise
 
----
-
-# 🧪 Workshop Mode
-
-This repository contains:
-
-* `stable-backup` → Fully working game (DO NOT TOUCH)
-* `workshop-main` → Locked branch (starting point)
-* 7 feature branches
-
-Participants must:
-
-1. Merge all feature branches
-2. Resolve all conflicts
-3. Restore game functionality
-
----
-
-# 🌿 Feature Branches
-
-* `feature-health-system`
-* `feature-armor`
-* `feature-weapon-rework`
-* `feature-resolution`
-* `feature-ray-refactor`
-* `feature-init-reorder`
-
----
-
-# 🚀 Merge Instructions (Participants)
-
-Start from:
-
-```bash
-git checkout workshop-main
+```sh
+git fetch origin
+git switch -c workshop/my-attempt origin/master
+python tools/check_workshop.py --expect starter
 ```
 
-Merge branches one by one:
+Running `python main.py` here produces an explanation listing the features still
+missing. Follow [WORKSHOP.md](WORKSHOP.md) to integrate them. Do not copy the
+solution or toggle all the flags when practicing: the goal is to understand
+and resolve the code changes themselves.
 
-```bash
-git merge feature-health-system
-git merge feature-armor
-git merge feature-weapon-rework
-git merge feature-resolution
-git merge feature-ray-refactor
-git merge feature-init-reorder
+## Verification
+
+The source check needs only Python; it checks syntax and the six feature flags.
+For the solution, it also checks key names agree across the health, weapon/NPC,
+resolution, and raycasting changes. It does not prove gameplay correctness.
+
+The runtime smoke check needs pygame and exercises real assets, rendering,
+updates, armor, weapon damage, and restarting:
+
+```sh
+python tools/smoke_game.py --frames 120
 ```
 
----
+For automated checks without opening a window or using speakers, on Linux/macOS:
 
-# 💥 Resolving Merge Conflicts
-
-When you see something like:
-
-```python
-<<<<<<< HEAD
-code A
-=======
-code B
->>>>>>> branch-name
+```sh
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python tools/smoke_game.py --frames 120
 ```
 
-You must:
+On PowerShell set `$env:SDL_VIDEODRIVER='dummy'` and
+`$env:SDL_AUDIODRIVER='dummy'` before running the smoke check. Headless checks
+cannot verify how mouse control, audio, or animation feel on a desktop.
 
-1. Decide what logic to keep
-2. Remove the conflict markers
-3. Save the file
-4. Stage the file:
+## Common problems
 
-```bash
-git add filename.py
-```
+- **Starter reports missing merges:** expected until all six features are integrated.
+- **Feature branch is not found:** merge `origin/feature-...` after `git fetch origin`.
+  Fresh clones do not automatically create local branches for every remote branch.
+- **Window or audio initialization fails:** use a desktop/audio device for play,
+  or the SDL dummy drivers for automated smoke checks.
+- **Merge completes but game crashes:** inspect cross-file renames and constructor
+  dependencies; a clean Git status is not proof that the combined code works.
 
-5. Complete the merge:
+## Project structure
 
-```bash
-git commit
-```
-
----
-
-# 🏆 Victory Condition
-
-The game launches successfully:
-
-```bash
-python main.py
-```
-
-You should be able to:
-
-* Move with WASD
-* Look around with mouse
-* Shoot
-* Take damage from NPCs
-
-If it crashes:
-
-* You missed a conflict
-* You lost logic during merge
-* A required feature flag is still False
-
----
-
-# 🛑 Rules for Participants
-
-* ❌ Do NOT edit `stable-backup`
-* ❌ Do NOT manually change feature lock flags
-* ❌ Do NOT delete functionality to "fix" errors
-* ✅ Properly merge and reconcile logic
-
----
-
-# 🧠 Common Issues
-
-## Virtual environment not activated
-
-Make sure you see:
-
-```
-(.venv)
-```
-
-before running Python.
-
----
-
-## pygame not found
-
-Install it:
-
-```bash
-pip install pygame
-```
-
----
-
-## Merge not completing
-
-Check:
-
-```bash
-git status
-```
-
-If you see:
-
-```
-Unmerged paths
-```
-
-You must:
-
-```bash
-git add .
-git commit
-```
-
-after resolving conflicts.
-
----
-
-# 📂 Project Structure
-
-* `main.py` → Game entry point
-* `player.py` → Player logic
-* `npc.py` → NPC behavior
-* `weapon.py` → Weapon system
-* `raycasting.py` → Rendering engine
-* `settings.py` → Game configuration
-* `object_handler.py` → Sprite & NPC management
-* `stable-backup` → Fully working safe branch
-* `workshop-main` → Locked branch for workshop
-
----
-
-# 🎓 Learning Outcomes
-
-By completing this workshop you will learn:
-
-* Git branching
-* Feature workflow
-* Merge conflicts
-* Conflict markers
-* Manual conflict resolution
-* Logical reconciliation
-* Multi-branch integration
-
----
-
-# 🏁 End Result
-
-When all conflicts are properly resolved:
-
-🎮 The game runs
-🔥 All systems work
-✅ All feature flags are enabled
-🏆 You win the Git Merge Battle
-
----
-
+`main.py` runs the game and guards the workshop. `workshop.py` lists its six
+features. `player.py`, `weapon.py`, and `npc.py` handle combat; `raycasting.py`,
+`object_renderer.py`, and the sprite modules render it. `map.py` and
+`pathfinding.py` handle the world, while `resources/` holds images and audio.
+`tools/` contains source and runtime checks.

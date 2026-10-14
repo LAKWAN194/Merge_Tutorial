@@ -1,319 +1,78 @@
-# 🧨 Git Workshop – Merge & Conflict Resolution Guide
+# Participant Guide: Merge and Conflict Resolution
 
-## 🎯 Objective
+## Objective
 
-Your mission:
+Integrate six branches into your own branch from `origin/master`, resolving
+text conflicts and code dependencies until the game runs. Preserve each feature's
+behavior. The finished demo on `workshop-solution` is an instructor reference;
+`stable-backup` is the original baseline and should remain untouched.
 
-Merge 6 feature branches into master and restore the game to a playable state.
+## 1. Create an isolated attempt
 
-The game will NOT run until:
-- All branches are merged
-- All merge conflicts are resolved properly
-- `REQUIRED_FEATURES` contains **6 True values**
+After installing dependencies as described in [README.md](README.md):
 
----
-
-# 🛑 RULES
-
-- ❌ Do NOT checkout `stable-backup`
-- ❌ Do NOT manually set all REQUIRED_FEATURES to True
-- ❌ Do NOT delete feature logic to “make it run”
-- ✅ You MUST resolve conflicts properly
-- ✅ The game must run successfully at the end
-
----
-
-# 🧭 STEP 1 — Switch to Main Workshop Branch
-
-```bash
-git checkout master
+```sh
+git fetch origin
+git switch -c workshop/my-attempt origin/master
+python tools/check_workshop.py --expect starter
 ```
 
-Confirm:
+Choose a different attempt name if this one already exists. `master` is the
+starter; the old documentation's `workshop-main` branch does not exist.
 
-```bash
-git branch
+## 2. Merge the six features
+
+Run one command at a time. Resolve and commit each merge before starting the next:
+
+```sh
+git merge origin/feature-health-system
+git merge origin/feature-armor
+git merge origin/feature-weapon-rework
+git merge origin/feature-resolution
+git merge origin/feature-ray-refactor
+git merge origin/feature-init-reorder
 ```
 
-You should see:
+| Feature | Integration detail to review |
+| --- | --- |
+| Health | `PLAYER_BASE_HEALTH` must agree between settings and player initialization/recovery |
+| Armor | Retain initial armor and absorb incoming damage before reducing health |
+| Weapon | Keep `base_damage` and update the NPC damage reference to match |
+| Resolution | Keep `BASE_WIDTH`, `BASE_HEIGHT`, and derived rendering constants consistent |
+| Raycasting | Keep `perform_ray_cast` and update the call from `update()` |
+| Initialization | Resolve the reordered constructors according to their dependencies; initialize `ObjectRenderer` before `Raycasting`, which needs its textures |
 
-```
-* master
-  stable-backup
-  feature-health-system
-  feature-armor
-  feature-weapon-rework
-  feature-resolution
-  feature-ray-refactor
-  feature-init-reorder
-```
+Conflicts depend on merge order and Git's merge algorithm. Some files may merge
+cleanly but still need an integration correction. In particular, the incoming
+initialization reorder places the renderer too late; simply accepting it breaks
+the texture dependency.
 
----
+## 3. Resolve conflicts deliberately
 
-# 🚀 STEP 2 — Merge Branches One by One
+Use `git status` to identify unresolved files. A conflict block contains both
+versions separated by `<<<<<<<`, `=======`, and `>>>>>>>`. Keep the combined
+behavior rather than choosing an entire side indiscriminately.
 
-We will merge in this order:
+For `main.py`, retain the starter's launcher improvements and the enabled flags
+from every feature integrated so far. Each historical branch contains an obsolete
+`npc_difficulty` flag: remove it when resolving the dictionary. There is no
+seventh feature branch to merge.
 
-1. feature-health-system
-2. feature-armor
-3. feature-weapon-rework
-4. feature-resolution
-5. feature-ray-refactor
-6. feature-init-reorder
+After removing conflict markers and reconciling the code:
 
----
-
-## ✅ Merge 1
-
-```bash
-git merge feature-health-system
-```
-
-If no conflicts:
-
-```bash
-git status
+```sh
+git diff --check
+git add main.py player.py settings.py  # use the actual files you resolved
+git commit                         # records this merge resolution
 ```
 
-Then continue.
+Do not set flags for branches you have not integrated. Do not remove combat,
+rendering, or constructors just to make the program start. If you want to abandon
+an in-progress merge, `git merge --abort` restores the pre-merge state.
 
----
+## 4. Validate the completed integration
 
-## 🔥 Merge 2 (First Conflict Expected)
-
-```bash
-git merge feature-armor
-```
-
-You will likely see:
-
-```
-CONFLICT (content): Merge conflict in main.py
-```
-
----
-
-# 🧨 How to Resolve a Merge Conflict
-
-Open the conflicted file.
-
-You will see something like:
-
-```python
-<<<<<<< HEAD
-    "health_system": True,
-    "armor_system": False,
-=======
-    "health_system": False,
-    "armor_system": True,
->>>>>>> feature-armor
-```
-
-### What This Means
-
-- `HEAD` = current branch (master)
-- `feature-armor` = incoming branch
-
----
-
-## ✅ Correct Resolution
-
-You must combine BOTH changes:
-
-```python
-    "health_system": True,
-    "armor_system": True,
-```
-
-### 🔥 REMOVE THESE LINES COMPLETELY:
-
-```
-<<<<<<< HEAD
-=======
->>>>>>> feature-armor
-```
-
-Save the file.
-
----
-
-## Finish the Merge
-
-```bash
-git add main.py
-git commit
-```
-
----
-
-# 🧨 Repeat For Each Branch
-
----
-
-## Merge 3
-
-```bash
-git merge feature-weapon-rework
-```
-
-Possible conflict in:
-- npc.py
-- weapon.py
-- main.py
-
-### If conflict in weapon damage:
-
-You may see:
-
-```python
-<<<<<<< HEAD
-self.damage = 50
-=======
-self.base_damage = 40
-self.crit_multiplier = 2
->>>>>>> feature-weapon-rework
-```
-
-### Correct resolution:
-
-Keep the rework version:
-
-```python
-self.base_damage = 40
-self.crit_multiplier = 2
-```
-
-And ensure npc.py references:
-
-```python
-self.game.weapon.base_damage
-```
-
-NOT `.damage`.
-
----
-
-After fixing:
-
-```bash
-git add .
-git commit
-```
-
----
-
-## Merge 4
-
-```bash
-git merge feature-resolution
-```
-
-Conflict likely in `settings.py`.
-
-You may see:
-
-```python
-<<<<<<< HEAD
-RES = WIDTH, HEIGHT = 1600, 900
-=======
-BASE_WIDTH, BASE_HEIGHT = 1280, 720
-RES = WIDTH, HEIGHT = BASE_WIDTH, BASE_HEIGHT
->>>>>>> feature-resolution
-```
-
-Keep the new structure:
-
-```python
-BASE_WIDTH, BASE_HEIGHT = 1280, 720
-RES = WIDTH, HEIGHT = BASE_WIDTH, BASE_HEIGHT
-```
-
-Remove conflict markers.
-
-Then:
-
-```bash
-git add settings.py
-git commit
-```
-
----
-
-## Merge 5
-
-```bash
-git merge feature-ray-refactor
-```
-
-Conflict likely in:
-
-- raycasting.py
-
-You may see:
-
-```python
-<<<<<<< HEAD
-def ray_cast(self):
-=======
-def perform_ray_cast(self):
->>>>>>> feature-ray-refactor
-```
-
-Keep the renamed version:
-
-```python
-def perform_ray_cast(self):
-```
-
-Then ensure update() calls:
-
-```python
-self.perform_ray_cast()
-```
-
-NOT:
-
-```python
-self.ray_cast()
-```
-
-Save.
-
-```bash
-git add raycasting.py
-git commit
-```
-
----
-
-## Merge 6
-
-```bash
-git merge feature-init-reorder
-```
-
-Resolve any conflicts in:
-
-- main.py
-
-Ensure:
-- ObjectRenderer is initialized BEFORE Raycasting (important for textures)
-- No constructor logic is removed
-
-After resolving:
-
-```bash
-git add .
-git commit
-```
-
----
-
-# 🧪 FINAL CHECK
-
-Check REQUIRED_FEATURES in main.py:
-
-It MUST look like:
+All six flags should be true only after their corresponding changes are retained:
 
 ```python
 REQUIRED_FEATURES = {
@@ -326,84 +85,35 @@ REQUIRED_FEATURES = {
 }
 ```
 
----
-
-# 🧠 Verify No Conflict Markers Exist
-
-Search entire project for:
-
-```
-<<<<<<<
-=======
->>>>>>>
-```
-
-In VS Code:
-- Ctrl + Shift + F
-- Search `<<<<<<<`
-
-There must be ZERO results.
-
----
-
-# 🎮 Run The Game
-
-```bash
+```sh
+git status
+python tools/check_workshop.py --expect solution
+python tools/smoke_game.py --frames 120
 python main.py
 ```
 
-If everything is correct:
+The source check confirms syntax and key cross-file names. The runtime check
+renders frames, verifies armor absorbs damage, verifies a shot reduces NPC
+health by the weapon's base damage, and restarts the game. On a desktop, also
+check movement, mouse look, shooting, NPC attacks, and Escape. Headless SDL
+instructions are in the README.
 
-✅ Game launches  
-✅ Player moves  
-✅ NPCs attack  
-✅ No crash  
+## What the exercise teaches
 
----
+- Remote branches and working on your own integration branch
+- Reading and reconciling conflict blocks
+- Preserving independent features across overlapping changes
+- Detecting semantic errors after Git reports a successful merge
+- Verifying a result with both source checks and real runtime behavior
 
-# 🚨 If The Game Still Crashes
+Feature flags are a learning aid, not a secure anti-cheating mechanism. The real
+completion criterion is a coherent implementation with all six branches integrated
+and the checks passing. `crit_multiplier` is carried by the weapon branch, but
+random critical-hit behavior is not implemented or required by this exercise.
 
-Run:
+## Instructor reference
 
-```bash
-git status
-```
-
-Make sure:
-- No unmerged files remain
-- All conflicts were committed
-
-Common mistakes:
-- Leftover conflict markers
-- Missing method rename
-- Incorrect attribute name
-- Forgot to update constructor calls
-
----
-
-# 🏁 Victory Condition
-
-When the game runs successfully, you have:
-
-- Merged 6 branches
-- Resolved multiple conflicts
-- Reconciled logic properly
-- Completed the Git merge challenge
-
----
-
-# 🧨 Emergency Reset (Instructor Only)
-
-To restore working version:
-
-```bash
-git checkout stable-backup
-```
-
----
-
-# 🏆 Congratulations
-
-
-You have survived the Git Merge Tutorial.
-
+Use `workshop-solution` to inspect the completed merge history and runnable
+integration. Keep feature branches and `stable-backup` unchanged so future
+participants can still reproduce the exercise. Start another attempt from
+`origin/master` rather than resetting a branch that contains work you want to keep.
