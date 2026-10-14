@@ -18,7 +18,7 @@ REQUIRED_FEATURES = {
     "health_system": True,
     "armor_system": True,
     "weapon_rework": True,
-    "resolution_update": False,
+    "resolution_update": True,
     "ray_refactor": False,
     "init_reorder": False,
 }
