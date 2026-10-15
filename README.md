@@ -1,8 +1,16 @@
 # Git Merge Workshop — Raycasting Game
 
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
+![pygame](https://img.shields.io/badge/pygame-2.6-2E7D32)
+![Git](https://img.shields.io/badge/Git-merge%20workshop-F05032?logo=git&logoColor=white)
+
 This repository is a hands-on exercise in **Git branching, merge conflicts, and
 reconciling changes across files**. The pygame raycasting game is the teaching
 vehicle: participants merge six feature branches and restore a playable game.
+
+![The completed game on workshop-solution: walking a textured corridor, then shooting two soldiers, with health in the corner and the armor absorbing their return fire](docs/images/gameplay.gif)
+
+*The completed game on `workshop-solution`, which is what the six merges restore.*
 
 **The default `master` branch is intentionally locked.** That is the starting
 point of the exercise. To play the completed game instead, use
